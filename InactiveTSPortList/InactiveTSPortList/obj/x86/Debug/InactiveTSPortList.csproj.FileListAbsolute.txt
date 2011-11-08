@@ -1,0 +1,5 @@
+c:\users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\bin\Debug\InactiveTSPortList.exe
+c:\users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\bin\Debug\InactiveTSPortList.pdb
+c:\users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\obj\x86\Debug\InactiveTSPortList.exe
+c:\users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\obj\x86\Debug\InactiveTSPortList.pdb
