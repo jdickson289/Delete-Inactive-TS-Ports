@@ -1,4 +1,13 @@
-﻿using System;
+﻿//Version update 
+//31-10 Checking in code for 2008R2
+//11-11 Fixed a few errors of null reference with invalid registry keys
+//Added support for Windows 2003/2008. 
+//2003 and 2008 -  [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceClasses\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}]
+//2008R2 -[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceClasses\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}]
+
+
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Win32;
@@ -20,8 +29,11 @@ namespace InactiveTSPortList
             RegistryKey rk = Registry.LocalMachine;
             RegistryKey rk1 = Registry.LocalMachine;
             RegistryKey rn = Registry.LocalMachine;
+            RegistryKey rn1 = Registry.LocalMachine;
             RegistryKey rp = Registry.LocalMachine;
+            RegistryKey rp1 = Registry.LocalMachine;
             RegistryKey rl = Registry.LocalMachine;
+
             String m;
             String t;
             int l = 0;
@@ -38,15 +50,35 @@ namespace InactiveTSPortList
                         case "/r": Console.WriteLine("Running in read only mode.");
                             // Print out the subkeys.
                            
-
+                            //Loooking for keys for 2008 R2
 
                             rk = rk.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
-                            PrintKeys(rk);
-                            rk.Close();
+                            if (rk != null)
+                            {
+                                PrintKeys(rk); 
+                                rk.Close();
+                            }
+                            else
+                            { // Start looking for keys for 2003 and 2008 Server.
+                                rk1 = rk1.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
+                                if (rk1 != null)
+                                {
+                                    PrintKeys(rk1);
+                                    rk1.Close();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Require registry key does not exist. Nothing to display"); break;
+
+                                }
+                            }
+
+                                                       
                             //============================
 
                             Console.WriteLine("............................................................................ ");
                             Console.WriteLine();
+                            // === Looking for keys for 2008R2 first ===
                             rn = rn.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
                             if (rn != null)
                             {
@@ -79,30 +111,92 @@ namespace InactiveTSPortList
 
                                     if (l == 0)
                                         Console.WriteLine("Found No Inactive TS Port ..............");
-                                    //rl.Close();
-
-
-
-                                }
+                                    }
                                 rn.Close();
 
                             }     // close finding Inactive TS Port 
 
+
+                                // === Start looking for keys for 2003 and 2008===
+                            else
+                            {
+                                rn1 = rn1.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
+                                if (rn1 != null)
+                                {
+                                    Console.WriteLine("Searching for Inactive TS Ports");
+                                    // Console.WriteLine(" ");
+                                    String[] prnpm = rn1.GetSubKeyNames();
+                                    if (rn1.GetSubKeyNames() != null)
+                                    {
+
+                                        foreach (String n in prnpm)
+                                        {
+                                            m = n + "\\Device Parameters";
+                                            rl = rn1.OpenSubKey(m);
+
+                                            string pal = null;
+                                            if (rl != null)
+                                            {
+                                                pal = rl.GetValue("Port Description").ToString();
+                                            }
+
+                                            if ((pal == "Inactive TS Port"))
+                                            {
+                                                Console.Write(++l); Console.Write(". ");
+                                                // Console.Write(n);
+                                                Console.WriteLine(n + " is Inactive TS Port");
+                                            }
+
+
+                                        }
+
+                                        if (l == 0)
+                                            Console.WriteLine("Found No Inactive TS Port ..............");
+                                       }
+                                    rn1.Close();
+
+                                }
+                                else Console.WriteLine("Key doenst exist");
+                                
+                                // close finding Inactive TS Port 
+
+                            }
 
                             break;
 
-                        case "/R": Console.WriteLine("Running in read only mode."); 
-                            // Print out the subkeys.
-                          
+                        case "/R": Console.WriteLine("Running in read only mode.");
 
+                            // Print out the subkeys.
+
+                            //Loooking for keys for 2008 R2
 
                             rk = rk.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
-                            PrintKeys(rk);
-                            rk.Close();
+                            if (rk != null)
+                            {
+                                PrintKeys(rk);
+                                rk.Close();
+                            }
+                            else
+                            { // Start looking for keys for 2003 and 2008 Server.
+                                rk1 = rk1.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
+                                if (rk1 != null)
+                                {
+                                    PrintKeys(rk1);
+                                    rk1.Close();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Require registry key does not exist. Nothing to display"); break;
+
+                                }
+                            }
+
+
                             //============================
 
                             Console.WriteLine("............................................................................ ");
                             Console.WriteLine();
+                            // === Looking for keys for 2008R2 first ===
                             rn = rn.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
                             if (rn != null)
                             {
@@ -114,7 +208,6 @@ namespace InactiveTSPortList
 
                                     foreach (String n in prnpm)
                                     {
-
                                         m = n + "\\Device Parameters";
                                         rl = rn.OpenSubKey(m);
 
@@ -136,15 +229,56 @@ namespace InactiveTSPortList
 
                                     if (l == 0)
                                         Console.WriteLine("Found No Inactive TS Port ..............");
-                                    //rl.Close();
-
-
-
                                 }
                                 rn.Close();
 
                             }     // close finding Inactive TS Port 
 
+
+                                // === Start looking for keys for 2003 and 2008===
+                            else
+                            {
+                                rn1 = rn1.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
+                                if (rn1 != null)
+                                {
+                                    Console.WriteLine("Searching for Inactive TS Ports");
+                                    // Console.WriteLine(" ");
+                                    String[] prnpm = rn1.GetSubKeyNames();
+                                    if (rn1.GetSubKeyNames() != null)
+                                    {
+
+                                        foreach (String n in prnpm)
+                                        {
+                                            m = n + "\\Device Parameters";
+                                            rl = rn1.OpenSubKey(m);
+
+                                            string pal = null;
+                                            if (rl != null)
+                                            {
+                                                pal = rl.GetValue("Port Description").ToString();
+                                            }
+
+                                            if ((pal == "Inactive TS Port"))
+                                            {
+                                                Console.Write(++l); Console.Write(". ");
+                                                // Console.Write(n);
+                                                Console.WriteLine(n + " is Inactive TS Port");
+                                            }
+
+
+                                        }
+
+                                        if (l == 0)
+                                            Console.WriteLine("Found No Inactive TS Port ..............");
+                                    }
+                                    rn1.Close();
+
+                                }
+                                else Console.WriteLine("Key doenst exist");
+
+                                // close finding Inactive TS Port 
+
+                            }
 
                             break;
 
@@ -155,9 +289,10 @@ namespace InactiveTSPortList
 
 
                             Console.WriteLine("\nNow Deleting the Inactive TS Ports");
+                            //checking for 2008R2
                             rp = rp.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
                             if (rp != null)
-                            {
+                            { 
 
                                 String[] prnpm = rp.GetSubKeyNames();
                                 if (rp.GetSubKeyNames() != null)
@@ -194,11 +329,63 @@ namespace InactiveTSPortList
                                     if (l == 0)
                                         Console.WriteLine("Found No Inactive TS Port ..............");
                                 }
+                            rp.Close();
                             }
 
+                            
+                        else 
+                            { //checking for 2003 and 2008 
+                              
+                                 rp1 = rp1.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
+                            if (rp1 != null)
+                            {
 
-                            rp.Close();
-                            // close delete Inactive TS Port 
+                                String[] prnpm = rp1.GetSubKeyNames();
+                                if (rp1.GetSubKeyNames() != null)
+                                {
+                                    foreach (String n in prnpm)
+                                    {
+                                        m = n + "\\Device Parameters";
+                                        rl = rp1.OpenSubKey(m);
+                                        string dc = null; //delete candidate 
+                                        if (rl != null)
+                                        {
+                                            dc = rl.GetValue("Port Description").ToString();
+                                        }
+
+                                        if ((dc == "Inactive TS Port"))
+                                        {
+                                            // Console.Write(++l); Console.Write(". ");
+
+                                            try
+                                            {
+                                                Console.WriteLine(n + " was deleted");
+                                                rp1.DeleteSubKeyTree(n);
+
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.WriteLine("Error while deleting test value: {0}", ex);
+                                            }
+
+                                        }
+
+                                    }
+
+                                    if (l == 0)
+                                        Console.WriteLine("Found No Inactive TS Port ..............");
+                                }
+                            rp1.Close();
+                            }
+
+                            else   
+                            { 
+                                Console.WriteLine("Required registry Key does not exist. Nothing to delete");
+                            }
+
+                            }
+
+                   // close delete Inactive TS Port 
 
                             break;
 
@@ -216,7 +403,13 @@ namespace InactiveTSPortList
                             // if (ch.KeyChar == 'y' || ch.KeyChar == 'Y')
                             // {
 
+
+
+                            // To delete the Inactive TS Port registry
+
+
                             Console.WriteLine("\nNow Deleting the Inactive TS Ports");
+                            //checking for 2008R2
                             rp = rp.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
                             if (rp != null)
                             {
@@ -256,12 +449,63 @@ namespace InactiveTSPortList
                                     if (l == 0)
                                         Console.WriteLine("Found No Inactive TS Port ..............");
                                 }
+                                rp.Close();
                             }
 
 
-                            rp.Close();
-                            // close delete Inactive TS Port 
+                            else
+                            { //checking for 2003 and 2008 
 
+                                rp1 = rp1.OpenSubKey("SYSTEM\\CURRENTCONTROLSET\\CONTROL\\DeviceClasses\\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}", true);
+                                if (rp1 != null)
+                                {
+
+                                    String[] prnpm = rp1.GetSubKeyNames();
+                                    if (rp1.GetSubKeyNames() != null)
+                                    {
+                                        foreach (String n in prnpm)
+                                        {
+                                            m = n + "\\Device Parameters";
+                                            rl = rp1.OpenSubKey(m);
+                                            string dc = null; //delete candidate 
+                                            if (rl != null)
+                                            {
+                                                dc = rl.GetValue("Port Description").ToString();
+                                            }
+
+                                            if ((dc == "Inactive TS Port"))
+                                            {
+                                                // Console.Write(++l); Console.Write(". ");
+
+                                                try
+                                                {
+                                                    Console.WriteLine(n + " was deleted");
+                                                    rp1.DeleteSubKeyTree(n);
+
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    Console.WriteLine("Error while deleting test value: {0}", ex);
+                                                }
+
+                                            }
+
+                                        }
+
+                                        if (l == 0)
+                                            Console.WriteLine("Found No Inactive TS Port ..............");
+                                    }
+                                    rp1.Close();
+                                }
+
+                                else
+                                {
+                                    Console.WriteLine("Required registry Key does not exist. Nothing to delete");
+                                }
+
+                            }
+
+                            // close delete Inactive TS Port 
 
                             break;
 
