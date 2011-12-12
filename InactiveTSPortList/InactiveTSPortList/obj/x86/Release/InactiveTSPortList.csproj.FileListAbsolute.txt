@@ -3,3 +3,8 @@ C:\Users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\Inact
 C:\Users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\obj\x86\Release\ResolveAssemblyReference.cache
 C:\Users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\obj\x86\Release\InactiveTSPortList.exe
 C:\Users\digvijan\documents\visual studio 2010\Projects\InactiveTSPortList\InactiveTSPortList\obj\x86\Release\InactiveTSPortList.pdb
+C:\Users\digvijan\Desktop\InactiveTSPortList\InactiveTSPortList\obj\x86\Release\InactiveTSPortList.exe
+C:\Users\digvijan\Desktop\InactiveTSPortList\InactiveTSPortList\obj\x86\Release\InactiveTSPortList.pdb
+C:\Users\digvijan\Desktop\InactiveTSPortList\InactiveTSPortList\bin\Release\InactiveTSPortList.exe
+C:\Users\digvijan\Desktop\InactiveTSPortList\InactiveTSPortList\bin\Release\InactiveTSPortList.pdb
+C:\Users\digvijan\Desktop\InactiveTSPortList\InactiveTSPortList\obj\x86\Release\ResolveAssemblyReference.cache

@@ -4,6 +4,8 @@
 //Added support for Windows 2003/2008. 
 //2003 and 2008 -  [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceClasses\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\##?#Root#RDPDR#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}]
 //2008R2 -[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceClasses\{28d78fad-5a12-11d1-ae5b-0000f803a8c2}\##?#Root#RDPBUS#0000#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}]
+//12 Dec 2011 - Setting ReferenceCount to 0.
+
 
 
 
@@ -106,8 +108,16 @@ namespace InactiveTSPortList
                                             Console.WriteLine(n + " is Inactive TS Port");
                                         }
 
+                                     
+                                     
 
                                     }
+
+                                    //if (rn.GetSubKeyNames().ToString().Equals("Control"))
+                                    //{
+                                    //    Console.WriteLine("COUNT FOUND");
+                                    //}
+                                    //else Console.WriteLine("COUNT NOT FOUND");
 
                                     if (l == 0)
                                         Console.WriteLine("Found No Inactive TS Port ..............");
@@ -300,7 +310,7 @@ namespace InactiveTSPortList
                                     foreach (String n in prnpm)
                                     {
                                         m = n + "\\Device Parameters";
-                                        rl = rp.OpenSubKey(m);
+                                        rl = rp.OpenSubKey(m,true);
                                         string dc = null; //delete candidate 
                                         if (rl != null)
                                         {
@@ -314,7 +324,8 @@ namespace InactiveTSPortList
                                             try
                                             {
                                                 Console.WriteLine(n + " will be deleted");
-                                                rp.DeleteSubKeyTree(n);
+                                                rp.DeleteSubKeyTree(n); l++;
+
 
                                             }
                                             catch (Exception ex)
@@ -324,10 +335,26 @@ namespace InactiveTSPortList
 
                                         }
 
+                                        // setting reference count to 0
+                                        if (String.Compare(n, "Control") == 0)
+                                        {
+                                            rl = rp.OpenSubKey(n, true);
+                                            rl.SetValue("ReferenceCount", 0);
+                                        }
+
                                     }
 
                                     if (l == 0)
                                         Console.WriteLine("Found No Inactive TS Port ..............");
+
+                                    
+                                    //++++
+                                    //if(rp.GetSubKeyNames().ToString().Equals("Control"))
+                                    //{
+                                    //    Console.WriteLine("COUNT FOUND");
+                                    //}
+                                    //++++
+
                                 }
                             rp.Close();
                             }
@@ -346,7 +373,7 @@ namespace InactiveTSPortList
                                     foreach (String n in prnpm)
                                     {
                                         m = n + "\\Device Parameters";
-                                        rl = rp1.OpenSubKey(m);
+                                        rl = rp1.OpenSubKey(m,true);
                                         string dc = null; //delete candidate 
                                         if (rl != null)
                                         {
@@ -361,13 +388,19 @@ namespace InactiveTSPortList
                                             {
                                                 Console.WriteLine(n + " was deleted");
                                                 rp1.DeleteSubKeyTree(n);
-
+                                                l++;
                                             }
                                             catch (Exception ex)
                                             {
                                                 Console.WriteLine("Error while deleting test value: {0}", ex);
                                             }
 
+                                        }
+
+                                        if (String.Compare(n, "Control") == 0)
+                                        {
+                                            rl = rp1.OpenSubKey(n, true);
+                                            rl.SetValue("ReferenceCount", 0);
                                         }
 
                                     }
@@ -420,7 +453,7 @@ namespace InactiveTSPortList
                                     foreach (String n in prnpm)
                                     {
                                         m = n + "\\Device Parameters";
-                                        rl = rp.OpenSubKey(m);
+                                        rl = rp.OpenSubKey(m,true);
                                         string dc = null; //delete candidate 
                                         if (rl != null)
                                         {
@@ -434,7 +467,7 @@ namespace InactiveTSPortList
                                             try
                                             {
                                                 Console.WriteLine(n + " will be deleted");
-                                                rp.DeleteSubKeyTree(n);
+                                                rp.DeleteSubKeyTree(n); l++;
 
                                             }
                                             catch (Exception ex)
@@ -442,6 +475,12 @@ namespace InactiveTSPortList
                                                 Console.WriteLine("Error while deleting test value: {0}", ex);
                                             }
 
+                                        }
+
+                                        if (String.Compare(n, "Control") == 0)
+                                        {
+                                            rl = rp.OpenSubKey(n, true);
+                                            rl.SetValue("ReferenceCount", 0);
                                         }
 
                                     }
@@ -466,7 +505,7 @@ namespace InactiveTSPortList
                                         foreach (String n in prnpm)
                                         {
                                             m = n + "\\Device Parameters";
-                                            rl = rp1.OpenSubKey(m);
+                                            rl = rp1.OpenSubKey(m,true);
                                             string dc = null; //delete candidate 
                                             if (rl != null)
                                             {
@@ -480,7 +519,7 @@ namespace InactiveTSPortList
                                                 try
                                                 {
                                                     Console.WriteLine(n + " was deleted");
-                                                    rp1.DeleteSubKeyTree(n);
+                                                    rp1.DeleteSubKeyTree(n); l++;
 
                                                 }
                                                 catch (Exception ex)
@@ -490,7 +529,15 @@ namespace InactiveTSPortList
 
                                             }
 
-                                        }
+                                            if (String.Compare(n, "Control") == 0)
+                                            {
+                                                rl = rp1.OpenSubKey(n, true);
+                                                rl.SetValue("ReferenceCount", 0);
+                                            }
+
+                                        } 
+
+                                        
 
                                         if (l == 0)
                                             Console.WriteLine("Found No Inactive TS Port ..............");
